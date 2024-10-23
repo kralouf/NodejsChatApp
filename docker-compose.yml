@@ -4,9 +4,6 @@ services:
   web:
     build: .
     ports:
-      - "3700:3700"
+      - "80:3700"
     volumes:
-      - .:/index
-      - /index/node_modules
-    environment:
-      - NODE_ENV=development
+      - ./:/app
