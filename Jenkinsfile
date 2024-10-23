@@ -9,7 +9,7 @@ node('ubuntu-Appserver-3120')
     stage('Build-and-Tag')
     {
         /* Builds the actual image; synchronous to docker build on the CLI */
-        app = docker.build('lkraimer/NodeJSChatApp')
+        app = docker.build('lkraimer/nodejschatapp')
     }
     stage('Post-to-DockerHub')
     {
