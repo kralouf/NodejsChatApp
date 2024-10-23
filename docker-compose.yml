@@ -6,7 +6,7 @@ services:
     ports:
       - "3700:3700"
     volumes:
-      - .:/app
-      - /app/node_modules
+      - .:/index
+      - /index/node_modules
     environment:
       - NODE_ENV=development
