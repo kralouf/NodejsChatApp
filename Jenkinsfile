@@ -6,14 +6,14 @@ node('ubuntu-Appserver-3120')
         /* Lets make sure we have the repo cloned to our workspace */
         checkout scm
     }
-    stage('SCA-SAST-NODEJS-CHAT-APP-TESTING') 
-    {
-        snykSecurity(
-            snykInstallation: 'Snyk',
-            snykTokenId: 'Snykid',
-            severity: 'critical'
-        )
-    }
+    stage('SCA-SAST-SNYK-TEST') 
+        {
+            snykSecurity(
+                snykInstallation: 'Snyk',
+                snykTokenId: 'Snykid',
+                severity: 'critical'
+            )
+        }
     stage('Build-and-Tag')
     {
         /* Builds the actual image; synchronous to docker build on the CLI */
