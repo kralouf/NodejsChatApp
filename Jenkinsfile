@@ -8,11 +8,11 @@ node('ubuntu-Appserver-3120')
     }
     stage('SCA-SAST-NODEJS-CHAT-APP-TESTING') 
     {
-         snykSecurity(
+        snykSecurity(
             snykInstallation: 'Snyk',
             snykTokenId: 'Snykid',
             severity: 'critical'
-         )
+        )
     }
     stage('Build-and-Tag')
     {
