@@ -40,7 +40,7 @@ pipeline
             {
                 script
                 {
-                    def app = docker.build("lkraimer/snake_game_3120")
+                    def app = docker.build("lkraimer/nodejschatapp")
                     app.tag("latest")
                 }
             }
@@ -57,7 +57,7 @@ pipeline
                 {
                     docker.withRegistry("https://registry.hub.docker.com", "dockerhub_credentials")
                     {
-                        def app = docker.image("lkraimer/snake_game_3120")
+                        def app = docker.image("lkraimer/nodejschatapp")
                         app.push("latest")
                     }
                 }
