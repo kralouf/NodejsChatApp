@@ -1,78 +1,77 @@
-pipeline
-{
+pipeline {
     agent none
-    stages
-    {
-        stage('Cloning Git')
-        {
-            agent
-            {
+    stages {
+        stage('CLONE GIT REPOSITORY') {
+            agent {
                 label 'ubuntu-Appserver-3120'
             }
-            steps
-            {
+            steps {
                 checkout scm
             }
+        }  
+ 
+        stage('SCA-SAST-SNYK-TEST') {
+            agent any
+            steps {
+                script {
+                    snykSecurity(
+                        snykInstallation: 'Snyk',
+                        snykTokenId: 'Snykid',
+                        severity: 'critical'
+                    )
+                }
+            }
         }
-        stage('SCA-SAST-Snyk-Test')
-        {
-            agent
-            {
+ 
+        stage('SonarQube Analysis') {
+            agent {
                 label 'ubuntu-Appserver-3120'
             }
-            steps
-            {
-                snykSecurity(
-                snykInstallation: 'Snyk',
-                snykTokenId: 'Snykid',
-                severity: 'critical'
-            )
+            steps {
+                script {
+                    def scannerHome = tool 'sonarqube_scanner'
+                    withSonarQubeEnv('sonarqube') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=gameapp \
+                            -Dsonar.sources=."
+                    }
+                }
             }
-            
         }
-        stage('Build-and-Tag')
-        {
-            agent
-            {
+ 
+        stage('BUILD-AND-TAG') {
+            agent {
                 label 'ubuntu-Appserver-3120'
             }
-            steps
-            {
-                script
-                {
+            steps {
+                script {
                     def app = docker.build("lkraimer/nodejschatapp")
                     app.tag("latest")
                 }
             }
         }
-        stage('Post-to-DockerHub')
-        {
-            agent
-            {
+ 
+        stage('POST-TO-DOCKERHUB') {    
+            agent {
                 label 'ubuntu-Appserver-3120'
             }
-            steps
-            {
-                script
-                {
-                    docker.withRegistry("https://registry.hub.docker.com", "dockerhub_credentials")
-                    {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
                         def app = docker.image("lkraimer/nodejschatapp")
                         app.push("latest")
                     }
                 }
             }
         }
-        stage('Deployment')
-        {
-            agent
-            {
+ 
+        stage('DEPLOYMENT') {    
+            agent {
                 label 'ubuntu-Appserver-3120'
             }
-            steps
-            {
-                sh "docker compose down"
-                sh "docker-compose up -d"
+            steps {
+                sh "docker-compose down"
+                sh "docker-compose up -d"   
             }
         }
     }
