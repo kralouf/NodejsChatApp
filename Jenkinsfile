@@ -32,7 +32,7 @@ pipeline {
                     def scannerHome = tool 'sonarqube_scanner'
                     withSonarQubeEnv('sonarqube') {
                         sh "${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=gameapp \
+                            -Dsonar.projectKey=chatapp \
                             -Dsonar.sources=."
                     }
                 }
